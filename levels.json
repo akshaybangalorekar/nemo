@@ -1,0 +1,11 @@
+[
+ {"n":1,"name":"Platypus","size":"4:1","skills":["Safe entry and exit","Monkey walk and exit from deep water","Face in and bubbles","Aided back float","Aided front float","Aided front kick for three metres","Aided backstroke kick for three metres"]},
+ {"n":2,"name":"Sea Turtle","size":"4:1","skills":["Swim to wall independently in deep water","Submerge and pick up an object","Back float","Front float","Backstroke kick with board","Torpedo for three metres","Signal for help and be rescued"]},
+ {"n":3,"name":"Orca","size":"4:1","skills":["Jump in deep water and swim to wall independently","Tread water for 10 seconds","Backstroke kick for five metres","Torpedo with breath for eight metres","Streamline glide for five metres","Freestyle arms with board for eight metres","Perform a reach rescue"]},
+ {"n":4,"name":"Polar Bear","size":"4:1","skills":["Tread water for 30 seconds","Submerge and swim underwater","Back torpedo for eight metres","Backstroke with board for eight metres","Freestyle for eight metres","Three arm breathing with board","Perform a throw rescue"]},
+ {"n":5,"name":"Seal","size":"5:1","skills":["Tread water for one minute","Stride jump entry in deep water","Duck dive to recover object in deep water","Backstroke for eight metres","Freestyle with three arm breathing for eight metres","Survival backstroke kick for eight metres","Perform a rope rescue"]},
+ {"n":6,"name":"Crocodile","size":"5:1","skills":["Tread water for 30 seconds without hands","Backstroke for 15 metres","Freestyle for 15 metres","Survival backstroke for 15 metres","Breaststroke kick with board","Butterfly kick for eight metres","Safety swim for 50 metres"]},
+ {"n":7,"name":"Penguin","size":"6:1","skills":["Kneeling dive entry","Backstroke for 25 metres","Freestyle for 25 metres","Breaststroke glide for 15 metres","Butterfly for eight metres","Forward somersault","Safety swim for 100 metres"]},
+ {"n":8,"name":"Dugong","size":"6:1","skills":["Standing dive","Backstroke for 50 metres","Freestyle for 50 metres","Breaststroke glide for 25 metres","Butterfly for 15 metres","Tumble turn","Safety swim for 200 metres"]},
+ {"n":9,"name":"Dolphin","size":"8-10:1","skills":["Freestyle turn","Racing dive","Backstroke 200m","Freestyle 200m","Breaststroke 200m","Butterfly 50m","Individual Medley 200m"]}
+]

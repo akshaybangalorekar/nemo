@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nemo · swim progression</title>
+<meta name="theme-color" content="#0b6e8f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon-32.png">
+<style>
+  :root{
+    --bg:#0b6e8f; --bg-2:#1494bd; --deep:#064b62;
+    --surface:#ffffff; --surface-2:#eef7fa;
+    --ink:#082c38; --ink-dim:#4c7280;
+    --brand:#0a7d9e; --brand-wash:#e2f4f9;
+    --line:#dbe9ee; --line-soft:#eaf2f5;
+    --aqua:#38d0e0; --coral:#f4813f; --gold:#f4c95d;
+    --display:"Segoe UI",system-ui,-apple-system,sans-serif;
+    --body:system-ui,-apple-system,"Segoe UI",sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{font-family:var(--body);font-size:17px;color:var(--ink);
+    background:linear-gradient(170deg,var(--bg) 0%,var(--bg-2) 62%,#1aa9d2 100%);
+    min-height:100vh;text-wrap:pretty;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:520px;margin:0 auto;padding:0 20px 48px}
+
+  header.mast{display:flex;align-items:center;gap:12px;padding:26px 0 18px;color:#fff}
+  .crest{width:46px;height:46px;border-radius:13px;background:var(--coral);color:#4a1c0c;
+    display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:17px}
+  .mast h1{margin:0;font-family:var(--display);font-weight:800;font-size:25px;letter-spacing:-.02em}
+  .mast .sub{margin:3px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:rgba(255,255,255,.78)}
+  .mast .spacer{flex:1}
+  .iconbtn{appearance:none;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);
+    color:#fff;width:38px;height:38px;border-radius:50%;font-size:16px;cursor:pointer}
+  .iconbtn:active{background:rgba(255,255,255,.25)}
+
+  nav.tabs{display:flex;gap:4px;background:rgba(255,255,255,.14);border-radius:14px;padding:4px;margin-bottom:20px}
+  nav.tabs button{flex:1;appearance:none;border:0;background:transparent;color:rgba(255,255,255,.82);
+    font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;
+    padding:10px 4px;border-radius:11px;cursor:pointer}
+  nav.tabs button[aria-selected="true"]{background:var(--surface);color:var(--brand);font-weight:700}
+
+  .card{background:var(--surface);border-radius:22px;padding:24px;box-shadow:0 10px 30px rgba(4,40,54,.16);margin-bottom:18px}
+  .label{display:flex;align-items:center;gap:8px;margin:0 0 14px;font-family:var(--mono);
+    font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim)}
+  .label::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--aqua)}
+
+  .hero{background:linear-gradient(160deg,#0a5f7d,#0d87a8);color:#fff;border-radius:24px;padding:26px;
+    box-shadow:0 14px 34px rgba(3,34,46,.28);margin-bottom:18px;position:relative;overflow:hidden}
+  .hero .lanes{position:absolute;inset:0;opacity:.13}
+  .hero .kicker{position:relative;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:rgba(255,255,255,.75)}
+  .hero h2{position:relative;margin:8px 0 0;font-family:var(--display);font-weight:800;
+    font-size:44px;line-height:1.02;letter-spacing:-.03em;text-wrap:balance}
+  .hero .lvlno{position:relative;margin-top:6px;font-family:var(--mono);font-size:12px;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--aqua)}
+  .hero .since{position:relative;margin:18px 0 0;font-size:14.5px;color:rgba(255,255,255,.9);line-height:1.5}
+  .hero .since b{color:#fff}
+  .hero .bar{position:relative;margin-top:16px;height:8px;border-radius:5px;background:rgba(255,255,255,.2);overflow:hidden}
+  .hero .bar i{display:block;height:100%;border-radius:5px;background:var(--aqua)}
+
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+  .kpi{background:var(--surface);border-radius:18px;padding:16px 14px;box-shadow:0 8px 22px rgba(4,40,54,.14)}
+  .kpi .n{font-family:var(--display);font-weight:800;font-size:27px;line-height:1;letter-spacing:-.02em}
+  .kpi .n small{font-size:14px;color:var(--ink-dim);font-weight:600}
+  .kpi .k{margin-top:6px;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--ink-dim)}
+
+  .skill{display:flex;gap:13px;align-items:flex-start;width:100%;text-align:left;background:none;
+    border:0;border-bottom:1px solid var(--line-soft);padding:14px 0;cursor:pointer;font-family:inherit}
+  .skill:last-of-type{border-bottom:0}
+  .skill .tick{flex:0 0 24px;width:24px;height:24px;border-radius:8px;border:1.5px solid var(--line);
+    display:grid;place-items:center;font-size:14px;color:#fff;margin-top:1px}
+  .skill.on .tick{background:var(--brand);border-color:var(--brand)}
+  .skill .txt{flex:1;font-size:15.5px;line-height:1.45}
+  .skill.on .txt{color:var(--ink-dim)}
+
+  .lvl{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line-soft);width:100%;
+    background:none;border-left:0;border-right:0;border-top:0;text-align:left;cursor:pointer;font-family:inherit}
+  .lvl:last-child{border-bottom:0}
+  .lvl .no{width:30px;flex:0 0 30px;font-family:var(--mono);font-size:12px;color:var(--ink-dim)}
+  .lvl .nm{flex:1;font-size:16.5px;font-weight:500}
+  .lvl .tag{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+    padding:3px 7px;border-radius:5px}
+  .lvl.done .nm{color:var(--ink-dim)}
+  .lvl.done .tag{background:var(--brand-wash);color:var(--brand)}
+  .lvl.now{background:var(--brand-wash);border-radius:14px;padding-left:12px;padding-right:12px;margin:0 -12px}
+  .lvl.now .nm{color:var(--brand);font-weight:700}
+  .lvl.now .tag{background:var(--aqua);color:var(--deep);font-weight:700}
+  .lvl .chev{color:var(--ink-dim);font-size:12px}
+
+  .tl{list-style:none;margin:0;padding:0}
+  .tl li{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid var(--line-soft)}
+  .tl li:last-child{border-bottom:0}
+  .tl .when{font-family:var(--mono);font-size:11px;color:var(--ink-dim);line-height:1.5}
+  .tl .what b{display:block;font-size:16px;font-weight:600}
+  .tl .what small{display:block;margin-top:3px;font-size:13px;color:var(--ink-dim);line-height:1.5}
+
+  .btn{appearance:none;border:0;border-radius:13px;background:var(--brand);color:#fff;font-family:inherit;
+    font-size:15px;font-weight:600;padding:14px 20px;cursor:pointer;width:100%}
+  .btn:active{opacity:.85}
+  .btn.ghost{background:var(--surface-2);color:var(--brand)}
+  .btn.small{width:auto;padding:10px 16px;font-size:13.5px}
+
+  .caption{font-size:13.5px;color:var(--ink-dim);line-height:1.6;margin:14px 0 0}
+
+  /* overlay */
+  .ov{position:fixed;inset:0;background:rgba(6,40,52,.55);display:none;align-items:flex-end;z-index:50;
+    backdrop-filter:blur(3px)}
+  .ov.on{display:flex}
+  .sheet{background:var(--surface);width:100%;max-width:520px;margin:0 auto;border-radius:24px 24px 0 0;
+    padding:14px 22px 30px;max-height:92vh;overflow-y:auto;animation:up .25s ease}
+  @keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+  .grab{width:38px;height:4px;border-radius:3px;background:var(--line);margin:0 auto 16px}
+  .ovclose{position:absolute;right:22px;top:18px;border:0;background:var(--surface-2);color:var(--ink-dim);
+    width:32px;height:32px;border-radius:50%;font-size:17px;cursor:pointer}
+  .sheet h3{margin:0 0 4px;font-family:var(--display);font-weight:800;font-size:23px;letter-spacing:-.02em}
+  .sheet .subl{margin:0 0 18px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-dim)}
+
+  /* gate */
+  .gate{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:24px;
+    background:linear-gradient(170deg,#064b62,#0b6e8f)}
+  .gate .box{width:100%;max-width:330px;text-align:center;color:#fff}
+  .gate h2{margin:0 0 6px;font-family:var(--display);font-weight:800;font-size:26px}
+  .gate p{margin:0 0 24px;font-size:14px;color:rgba(255,255,255,.75)}
+  .gate input{width:100%;text-align:center;font-family:var(--mono);font-size:26px;letter-spacing:.4em;
+    padding:16px;border-radius:14px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);
+    color:#fff;margin-bottom:14px}
+  .gate input::placeholder{color:rgba(255,255,255,.4);letter-spacing:.2em;font-size:16px}
+  .gate .err{min-height:20px;font-size:13px;color:var(--gold)}
+  .hidden{display:none!important}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--deep);color:#fff;
+    padding:12px 20px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:200}
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="box">
+    <h2>Nemo</h2>
+    <p>Swim school progression</p>
+    <input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="Passcode" maxlength="8">
+    <div class="err" id="pinErr"></div>
+    <button class="btn" id="pinGo">Open</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="crest">N</div>
+    <div>
+      <h1>Nemo</h1>
+      <p class="sub" id="mastSub">Glen Eira swim school</p>
+    </div>
+    <div class="spacer"></div>
+    <button class="iconbtn" id="settingsBtn" aria-label="Settings">⚙</button>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-view="now">Now</button>
+    <button role="tab" aria-selected="false" data-view="path">Levels</button>
+    <button role="tab" aria-selected="false" data-view="log">History</button>
+  </nav>
+
+  <main>
+    <section class="view" id="view-now"></section>
+    <section class="view hidden" id="view-path"></section>
+    <section class="view hidden" id="view-log"></section>
+  </main>
+</div>
+
+<div class="ov" id="ov"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const LEVELS = [{"n":1,"name":"Platypus","size":"4:1","skills":["Safe entry and exit","Monkey walk and exit from deep water","Face in and bubbles","Aided back float","Aided front float","Aided front kick for three metres","Aided backstroke kick for three metres"]},{"n":2,"name":"Sea Turtle","size":"4:1","skills":["Swim to wall independently in deep water","Submerge and pick up an object","Back float","Front float","Backstroke kick with board","Torpedo for three metres","Signal for help and be rescued"]},{"n":3,"name":"Orca","size":"4:1","skills":["Jump in deep water and swim to wall independently","Tread water for 10 seconds","Backstroke kick for five metres","Torpedo with breath for eight metres","Streamline glide for five metres","Freestyle arms with board for eight metres","Perform a reach rescue"]},{"n":4,"name":"Polar Bear","size":"4:1","skills":["Tread water for 30 seconds","Submerge and swim underwater","Back torpedo for eight metres","Backstroke with board for eight metres","Freestyle for eight metres","Three arm breathing with board","Perform a throw rescue"]},{"n":5,"name":"Seal","size":"5:1","skills":["Tread water for one minute","Stride jump entry in deep water","Duck dive to recover object in deep water","Backstroke for eight metres","Freestyle with three arm breathing for eight metres","Survival backstroke kick for eight metres","Perform a rope rescue"]},{"n":6,"name":"Crocodile","size":"5:1","skills":["Tread water for 30 seconds without hands","Backstroke for 15 metres","Freestyle for 15 metres","Survival backstroke for 15 metres","Breaststroke kick with board","Butterfly kick for eight metres","Safety swim for 50 metres"]},{"n":7,"name":"Penguin","size":"6:1","skills":["Kneeling dive entry","Backstroke for 25 metres","Freestyle for 25 metres","Breaststroke glide for 15 metres","Butterfly for eight metres","Forward somersault","Safety swim for 100 metres"]},{"n":8,"name":"Dugong","size":"6:1","skills":["Standing dive","Backstroke for 50 metres","Freestyle for 50 metres","Breaststroke glide for 25 metres","Butterfly for 15 metres","Tumble turn","Safety swim for 200 metres"]},{"n":9,"name":"Dolphin","size":"8-10:1","skills":["Freestyle turn","Racing dive","Backstroke 200m","Freestyle 200m","Breaststroke 200m","Butterfly 50m","Individual Medley 200m"]}];
+const STORE = "nemo-v1";
+const PASS_DEFAULT = "1981";
+
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const todayISO = () => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,"0")}-${String(n.getDate()).padStart(2,"0")}`; };
+const parseDate = (iso) => { const [y,m,d] = String(iso).split("-").map(Number); return new Date(y, m-1, d, 12); };
+const fmtDate = (iso) => { const d = parseDate(iso); return isNaN(d) ? "—" : `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`; };
+const daysBetween = (a, b) => Math.max(0, Math.round((parseDate(b) - parseDate(a)) / 86400000));
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function load() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(STORE) || "null");
+    if (raw && raw.level) return raw;
+  } catch (e) {}
+  return { level: 1, since: todayISO(), history: [], checks: {}, pass: PASS_DEFAULT };
+}
+let S = load();
+const save = () => localStorage.setItem(STORE, JSON.stringify(S));
+
+const levelOf = (n) => LEVELS.find((l) => l.n === n) || LEVELS[LEVELS.length - 1];
+const nextOf = (n) => LEVELS.find((l) => l.n === n + 1) || null;
+const daysAtLevel = () => daysBetween(S.since, todayISO());
+
+/* ---------- views ---------- */
+function viewNow() {
+  const L = levelOf(S.level);
+  const N = nextOf(S.level);
+  const done = (S.checks[S.level] || []).length;
+  const pctDone = Math.round((100 * done) / L.skills.length);
+  const days = daysAtLevel();
+  const pace = S.history.length ? Math.round(S.history.reduce((a, h) => a + (h.days || 0), 0) / S.history.length) : null;
+
+  const skills = L.skills.map((sk, i) => {
+    const on = (S.checks[S.level] || []).includes(i);
+    return `<button class="skill ${on ? "on" : ""}" data-skill="${i}">
+      <span class="tick">${on ? "✓" : ""}</span><span class="txt">${esc(sk)}</span></button>`;
+  }).join("");
+
+  return `
+    <div class="hero">
+      <svg class="lanes" viewBox="0 0 400 220" preserveAspectRatio="none" aria-hidden="true">
+        <g stroke="#ffffff" stroke-width="1" fill="none">
+          <line x1="0" y1="40" x2="400" y2="40"/><line x1="0" y1="95" x2="400" y2="95"/>
+          <line x1="0" y1="150" x2="400" y2="150"/><line x1="0" y1="205" x2="400" y2="205"/>
+        </g>
+      </svg>
+      <div class="kicker">Current level</div>
+      <h2>${esc(L.name)}</h2>
+      <div class="lvlno">Level ${L.n} of ${LEVELS.length}</div>
+      <div class="bar"><i style="width:${Math.max(6, pctDone)}%"></i></div>
+      <p class="since">${done} of ${L.skills.length} skills ticked · <b>${days} days</b> at this level${pace ? ` · his usual level takes about ${pace}` : ""}.</p>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="n">${S.level}<small>/${LEVELS.length}</small></div><div class="k">Level</div></div>
+      <div class="kpi"><div class="n">${days}<small>d</small></div><div class="k">At level</div></div>
+      <div class="kpi"><div class="n">${S.history.length}</div><div class="k">Passed</div></div>
+    </div>
+
+    <div class="card">
+      <p class="label">What he is working on</p>
+      ${skills}
+      <p class="caption">Tap a skill when the teacher signs it off. All ${L.skills.length} and he is ready for ${N ? esc(N.name) : "the Academy"}.</p>
+    </div>
+
+    ${N ? `<div class="card">
+      <p class="label">Next: Level ${N.n} · ${esc(N.name)}</p>
+      <ul class="tl">${N.skills.slice(0, 3).map((sk) => `<li><span class="when">needs</span><span class="what"><b>${esc(sk)}</b></span></li>`).join("")}</ul>
+      <p class="caption">${N.skills.length} skills in all. <a href="#" data-goto="path" style="color:var(--brand)">See the full level</a></p>
+    </div>` : `<div class="card">
+      <p class="label">After Level 9</p>
+      <p class="caption" style="margin:0">Dolphin is the last swim school level. From here it is the Academy of Swimming, or an Aquatic membership for independent laps.</p>
+    </div>`}
+
+    <button class="btn" id="promote">${N ? `Move up to ${esc(N.name)}` : "Mark swim school complete"}</button>
+  `;
+}
+
+function viewPath() {
+  const rows = LEVELS.map((L) => {
+    const passed = S.history.find((h) => h.level === L.n);
+    const now = L.n === S.level;
+    const cls = passed ? "done" : now ? "now" : "";
+    const tag = passed ? "passed" : now ? "here" : "";
+    return `<button class="lvl ${cls}" data-level="${L.n}">
+      <span class="no">${L.n}</span>
+      <span class="nm">${esc(L.name)}</span>
+      ${tag ? `<span class="tag">${tag}</span>` : ""}
+      <span class="chev">›</span></button>`;
+  }).join("");
+  return `<div class="card">
+      <p class="label">The nine levels</p>
+      ${rows}
+      <p class="caption">Tap any level to see its skills. Levels follow Glen Eira Leisure's published swim school program.</p>
+    </div>`;
+}
+
+function viewLog() {
+  const items = [...S.history].sort((a, b) => (a.date < b.date ? 1 : -1));
+  const rows = items.length
+    ? items.map((h) => `<li>
+        <span class="when">${fmtDate(h.date)}</span>
+        <span class="what"><b>Level ${h.level} · ${esc(h.name)}</b>
+        <small>${h.days ? `${h.days} days on this level` : "first level recorded"}</small></span></li>`).join("")
+    : `<li><span class="when">—</span><span class="what"><b>Nothing yet</b><small>Each level he passes will be logged here with how long it took.</small></span></li>`;
+
+  const totalDays = S.history.reduce((a, h) => a + (h.days || 0), 0);
+  return `<div class="card">
+      <p class="label">Level history</p>
+      <ul class="tl">${rows}</ul>
+      ${S.history.length ? `<p class="caption">${totalDays} days across ${S.history.length} level${S.history.length === 1 ? "" : "s"}.</p>` : ""}
+    </div>
+    <div class="card">
+      <p class="label">Where he started</p>
+      <p class="caption" style="margin:0">Currently on <b>${esc(levelOf(S.level).name)}</b> since ${fmtDate(S.since)} — ${daysAtLevel()} days.</p>
+    </div>`;
+}
+
+function render() {
+  document.getElementById("view-now").innerHTML = viewNow();
+  document.getElementById("view-path").innerHTML = viewPath();
+  document.getElementById("view-log").innerHTML = viewLog();
+  bind();
+}
+
+function bind() {
+  document.querySelectorAll("[data-skill]").forEach((b) => {
+    b.onclick = () => {
+      const i = Number(b.dataset.skill);
+      const arr = S.checks[S.level] || [];
+      S.checks[S.level] = arr.includes(i) ? arr.filter((x) => x !== i) : [...arr, i];
+      save(); render();
+    };
+  });
+  document.querySelectorAll("[data-level]").forEach((b) => {
+    b.onclick = () => openLevel(Number(b.dataset.level));
+  });
+  const p = document.getElementById("promote");
+  if (p) p.onclick = promote;
+  document.querySelectorAll("[data-goto]").forEach((a) => {
+    a.onclick = (e) => { e.preventDefault(); showTab(a.dataset.goto); };
+  });
+}
+
+/* ---------- actions ---------- */
+function promote() {
+  const L = levelOf(S.level);
+  const N = nextOf(S.level);
+  S.history.push({ level: L.n, name: L.name, date: todayISO(), days: daysAtLevel() });
+  if (N) { S.level = N.n; S.since = todayISO(); }
+  save(); render();
+  toast(N ? `Up to ${N.name}` : "Swim school complete");
+  showTab("now");
+}
+
+function openLevel(n) {
+  const L = levelOf(n);
+  const passed = S.history.find((h) => h.level === n);
+  const isNow = n === S.level;
+  const skills = L.skills.map((sk) => `<li><span class="when">${isNow ? "working on" : "needs"}</span>
+    <span class="what"><b>${esc(sk)}</b></span></li>`).join("");
+  openSheet(`
+    <div class="grab"></div>
+    <button class="ovclose" data-close="1" aria-label="Close">×</button>
+    <h3>${esc(L.name)}</h3>
+    <p class="subl">Level ${L.n} · class size ${esc(L.size)}${passed ? ` · passed ${fmtDate(passed.date)}` : isNow ? " · current" : ""}</p>
+    <ul class="tl">${skills}</ul>
+    <p class="caption">Skills as published by Glen Eira Leisure.</p>`);
+}
+
+function openSettings() {
+  openSheet(`
+    <div class="grab"></div>
+    <button class="ovclose" data-close="1" aria-label="Close">×</button>
+    <h3>Settings</h3>
+    <p class="subl">This phone only</p>
+    <p class="caption" style="margin-top:0">Everything is stored on this device — there is no account and no server.
+    The passcode keeps a casual looker out; it is not encryption.</p>
+    <button class="btn ghost" id="setStart" style="margin-top:18px">Set the date this level started</button>
+    <button class="btn ghost" id="setPin" style="margin-top:10px">Change passcode</button>
+    <button class="btn ghost" id="setExport" style="margin-top:10px">Copy a backup</button>`);
+  document.getElementById("setStart").onclick = () => {
+    const v = prompt("Date this level started (YYYY-MM-DD)", S.since);
+    if (v && /^\d{4}-\d{2}-\d{2}$/.test(v)) { S.since = v; save(); closeSheet(); render(); toast("Start date set"); }
+  };
+  document.getElementById("setPin").onclick = () => {
+    const v = prompt("New passcode (numbers)", "");
+    if (v && v.length >= 3) { S.pass = v; save(); closeSheet(); toast("Passcode changed"); }
+  };
+  document.getElementById("setExport").onclick = async () => {
+    const txt = JSON.stringify(S);
+    try { await navigator.clipboard.writeText(txt); toast("Backup copied"); }
+    catch (e) { prompt("Copy this:", txt); }
+  };
+}
+
+/* ---------- shell ---------- */
+function showTab(name) {
+  document.querySelectorAll(".tabs button").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.view === name)));
+  document.querySelectorAll(".view").forEach((v) => v.classList.add("hidden"));
+  const v = document.getElementById("view-" + name);
+  if (v) v.classList.remove("hidden");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+document.querySelectorAll(".tabs button").forEach((b) => { b.onclick = () => showTab(b.dataset.view); });
+
+function openSheet(html) {
+  document.getElementById("sheet").innerHTML = html;
+  document.getElementById("ov").classList.add("on");
+  document.body.style.overflow = "hidden";
+  document.querySelectorAll("[data-close]").forEach((b) => { b.onclick = closeSheet; });
+}
+function closeSheet() {
+  document.getElementById("ov").classList.remove("on");
+  document.body.style.overflow = "";
+}
+document.getElementById("ov").onclick = (e) => { if (e.target.id === "ov") closeSheet(); };
+document.getElementById("settingsBtn").onclick = openSettings;
+
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("on");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("on"), 2200);
+}
+
+/* ---------- gate ---------- */
+function unlock() {
+  document.getElementById("gate").classList.add("hidden");
+  render();
+}
+function tryPin() {
+  const v = document.getElementById("pin").value.trim();
+  if (v === S.pass) { sessionStorage.setItem("nemo-open", "1"); unlock(); }
+  else { document.getElementById("pinErr").textContent = "Not that one"; document.getElementById("pin").value = ""; }
+}
+document.getElementById("pinGo").onclick = tryPin;
+document.getElementById("pin").addEventListener("keydown", (e) => { if (e.key === "Enter") tryPin(); });
+
+if (sessionStorage.getItem("nemo-open") === "1") unlock();
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+</script>
+</body>
+</html>
